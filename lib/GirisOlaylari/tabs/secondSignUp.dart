@@ -2,9 +2,9 @@ import 'package:app_jam_ai/GirisOlaylari/tabs/textfield/testField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../ColorAndType/color.dart';
-import 'button/girisButton.dart';
 
+
+import 'button/girisButton.dart';
 
 class SignUpPage extends StatefulWidget {
   final TabController? tabController;
@@ -20,28 +20,18 @@ class _SignUpPageState extends State<SignUpPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  bool isLoading = false;
-
-  void showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
-    );
-  }
 
   Future<void> signUserUp() async {
     // Yukleniyor
-    setState(() {
-      isLoading = true;
-    });
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
     if (emailController.text.isEmpty ||
         passwordController.text.isEmpty ||
         confirmPasswordController.text.isEmpty) {
@@ -51,7 +41,9 @@ class _SignUpPageState extends State<SignUpPage> {
           return AlertDialog(
             title: Text(
               'Hata',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             content: Text(
               'Lütfen tüm alanları doldurun.',
@@ -60,18 +52,13 @@ class _SignUpPageState extends State<SignUpPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  setState(() {
-                    isLoading = false;
-                  });
-
+                  Navigator.pop(context);
                   // yukleniyordan cikis
                   Navigator.pop(context);
                 },
                 child: Text(
                   "Tamam",
                   style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.uc,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -82,9 +69,8 @@ class _SignUpPageState extends State<SignUpPage> {
       );
       return;
     }
-    setState(() {
-      isLoading = false;
-    });
+    // yukleniyordan cikis
+    Navigator.pop(context);
 
     if (passwordController.text == confirmPasswordController.text) {
       try {
@@ -98,17 +84,13 @@ class _SignUpPageState extends State<SignUpPage> {
         passwordController.clear();
         confirmPasswordController.clear();
         // Yukleniyordan çıkış
-        setState(() {
-          isLoading = false;
-        });
+        Navigator.pop(context);
 
         // Tabbar'a geçiş yap
         widget.tabController?.animateTo(0);
       } catch (error) {
         // Yukleniyordan çıkış
-        setState(() {
-          isLoading = false;
-        });
+        Navigator.pop(context);
 
         // Hata durumuna göre mesaj göster
         String errorMessage = 'Bilinmeyen bir hata oluştu.';
@@ -132,7 +114,9 @@ class _SignUpPageState extends State<SignUpPage> {
           builder: (context) => AlertDialog(
             title: Text(
               'Hata',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             content: Text(errorMessage),
             actions: [
@@ -144,8 +128,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Text(
                   "Tamam",
                   style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.uc,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -156,10 +138,7 @@ class _SignUpPageState extends State<SignUpPage> {
       }
     } else {
       // Yukleniyordan çıkış
-      setState(() {
-        isLoading = false;
-      });
-
+      Navigator.pop(context);
       // Şifreler uyuşmuyor diye hata mesajı göster
       showDialog(
         context: context,
@@ -167,7 +146,9 @@ class _SignUpPageState extends State<SignUpPage> {
           return AlertDialog(
             title: Text(
               'Hata',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             content: Text(
               "Şifreler aynı değil, lütfen kontrol ediniz.",
@@ -182,8 +163,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Text(
                   "Tamam",
                   style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.uc,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -199,160 +178,146 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'lib/images/logo.gif',
-                  fit: BoxFit.cover,
-                  width: 150,
-                  height: 150,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: 25), // Başlangıçtan sağa boşluk ekleyin
-                  child: Text(
-                    'E-posta',
-                    style: TextStyle(
-                      fontSize: 16, // Metin boyutunu 18 olarak ayarlar
-                      fontWeight: FontWeight.normal, // Metni kalınlaştırır
+        child: Center(
+          child: SingleChildScrollView(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: 25), // Başlangıçtan sağa boşluk ekleyin
+                    child: Text(
+                      'E-posta',
+                      style: TextStyle(
+                        fontSize: 15, // Metin boyutunu 18 olarak ayarlar
+                        fontWeight: FontWeight.normal, // Metni kalınlaştırır
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-            const SizedBox(
-              height: 10,
-            ),
+              const SizedBox(
+                height: 10,
+              ),
 
-            // email textfield
-            MyTextField(
-              controller: emailController, //??
-              hintText: 'Lütfen e-posta adresinizi giriniz',
-              obscureText: false,
-            ),
+              // email textfield
+              MyTextField(
+                controller: emailController, //??
+                hintText: 'Lütfen e-posta adresinizi giriniz',
+                obscureText: false,
+              ),
 
-            const SizedBox(
-              height: 5,
-            ),
+              const SizedBox(
+                height: 5,
+              ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: 25), // Başlangıçtan sağa boşluk ekleyin
-                  child: Text(
-                    'Şifre',
-                    style: TextStyle(
-                      fontSize: 16, // Metin boyutunu 18 olarak ayarlar
-                      fontWeight: FontWeight.normal, // Metni kalınlaştırır
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: 25), // Başlangıçtan sağa boşluk ekleyin
+                    child: Text(
+                      'Şifre',
+                      style: TextStyle(
+                        fontSize: 15, // Metin boyutunu 18 olarak ayarlar
+                        fontWeight: FontWeight.normal, // Metni kalınlaştırır
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-            const SizedBox(
-              height: 10,
-            ),
-            //sifre textfield
-            MyTextField(
-              controller: passwordController, //??
-              hintText: 'Lütfen parola giriniz',
-              obscureText: true, // gizliyor yazilan seyleri
-            ),
+              const SizedBox(
+                height: 10,
+              ),
+              //sifre textfield
+              MyTextField(
+                controller: passwordController, //??
+                hintText: 'Lütfen parola giriniz',
+                obscureText: true, // gizliyor yazilan seyleri
+              ),
 
-            const SizedBox(
-              height: 5,
-            ),
+              const SizedBox(
+                height: 5,
+              ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: const [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: 25), // Başlangıçtan sağa boşluk ekleyin
-                  child: Text(
-                    'Şifreyi Onayla',
-                    style: TextStyle(
-                      fontSize: 16, // Metin boyutunu 18 olarak ayarlar
-                      fontWeight: FontWeight.normal, // Metni kalınlaştırır
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: 25), // Başlangıçtan sağa boşluk ekleyin
+                    child: Text(
+                      'Şifreyi Onayla',
+                      style: TextStyle(
+                        fontSize: 15, // Metin boyutunu 18 olarak ayarlar
+                        fontWeight: FontWeight.normal, // Metni kalınlaştırır
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
-            const SizedBox(
-              height: 10,
-            ),
-            // sifre onaylama
-            MyTextField(
-              controller: confirmPasswordController, //??
-              hintText: 'Lütfen parolanızı tekrar giriniz',
-              obscureText: true, // gizliyor yazilan seyleri
-            ),
+              const SizedBox(
+                height: 10,
+              ),
+              // sifre onaylama
+              MyTextField(
+                controller: confirmPasswordController, //??
+                hintText: 'Lütfen parolanızı tekrar giriniz',
+                obscureText: true, // gizliyor yazilan seyleri
+              ),
 
-            const SizedBox(
-              height: 15,
-            ),
+              const SizedBox(
+                height: 15,
+              ),
 
-            //kayit olma button
-            MyButton(
-              onTap: signUserUp, //??
-              text: 'Kayıt Ol',
-            ),
-            const SizedBox(
-              height: 25,
-            ),
+              //kayit olma button
+              MyButton(
+                onTap: signUserUp, //??
+                text: 'Kayıt Ol',
+              ),
+              const SizedBox(
+                height: 25,
+              ),
 
-            const SizedBox(
-              height: 5,
-            ),
+              const SizedBox(
+                height: 5,
+              ),
 
-            // hazırda hesabın var mı
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Hazırda zaten hesabın var mı?',
-                  style: TextStyle(color: Colors.grey[700]),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                GestureDetector(
-                  //birseyleri butona cevirmeye yariyor
-                  onTap: () {
-                    widget.tabController
-                        ?.animateTo(0); // Tab bar'da ikinci sekmeye geçiş yap
-                  }, //??
-                  child: const Text(
-                    'Oturum Aç',
-                    style: TextStyle(
-                      color: AppColors.iki,
-                      fontWeight: FontWeight.bold,
+              // hazırda hesabın var mı
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Hazırda zaten hesabın var mı?',
+                    style: TextStyle(color: Colors.grey[700]),
+                  ),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  GestureDetector(
+                    //birseyleri butona cevirmeye yariyor
+                    onTap: () {
+                      widget.tabController
+                          ?.animateTo(0); // Tab bar'da ikinci sekmeye geçiş yap
+                    }, //??
+                    child: const Text(
+                      'Oturum Aç',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ]),
+                ],
+              ),
+            ]),
+          ),
         ),
       ),
     );

@@ -1,13 +1,11 @@
 import 'package:app_jam_ai/GirisOlaylari/tabs/firstSignIn.dart';
 import 'package:app_jam_ai/GirisOlaylari/tabs/secondSignUp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../ColorAndType/color.dart';
 
 
 class GirisPage extends StatefulWidget {
-  final String detailsPath;
-  const GirisPage({super.key, required this.detailsPath});
+  const GirisPage({super.key});
 
   @override
   State<GirisPage> createState() => _GirisPageState();
@@ -35,27 +33,22 @@ class _GirisPageState extends State<GirisPage>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            "Hesabım",
-            style: TextStyle(
-              color: AppColors.bir,
-            ),
+          title: Text(
+            'Hesabım ', //${_tabController.index + 1}
             textAlign: TextAlign.center,
           ),
           centerTitle: true,
-          backgroundColor: AppColors.uc,
+          backgroundColor: Colors.black12,
         ),
         body: Column(children: [
           //hata olursa buraya bak const ekledin
           TabBar(
               controller: _tabController,
-              labelColor: AppColors.yedi, //secili olan tabin rengi
-              unselectedLabelColor: AppColors.iki,// secili olmayan tabin rengi
-              indicatorColor: AppColors.alti, // secili cizgi
+              labelColor: Colors.black, //secili olan tabin rengi
+              unselectedLabelColor: Colors.grey, // secili olmayan tabin rengi
               tabs: const [
                 Tab(
                   text: 'Giriş Yap',
-                  
                 ),
                 Tab(
                   text: 'Üye Ol',
@@ -64,9 +57,7 @@ class _GirisPageState extends State<GirisPage>
           Expanded(
             child: TabBarView(controller: _tabController, children: [
               //sign in
-              SignInPage(
-                tabController: _tabController,
-              ),
+              SignInPage(tabController: _tabController),
 
               //sign up
               SignUpPage(tabController: _tabController),

@@ -1,16 +1,12 @@
-
+import 'package:app_jam_ai/GirisOlaylari/tabs/sifreUnuttumPage.dart';
 import 'package:app_jam_ai/GirisOlaylari/tabs/textfield/testField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../ColorAndType/color.dart';
 import 'button/girisButton.dart';
-
 
 class SignInPage extends StatefulWidget {
   final TabController? tabController;
-
   const SignInPage({Key? key, this.tabController}) : super(key: key);
 
   @override
@@ -18,29 +14,21 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  // text duzenleme kontrolleri
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  bool isLoading = false;
 
-  void showLoadingDialog(BuildContext context) {
+  //giris kulanici method
+  Future<void> signUserIn() async {
+    // yukleniyor
     showDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+      builder: (context) {
+        return Center(
+          child: CircularProgressIndicator(),
         );
       },
     );
-  }
-
-  Future<void> signUserIn() async {
-    setState(() {
-      isLoading = true;
-    });
 
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       showDialog(
@@ -49,7 +37,9 @@ class _SignInPageState extends State<SignInPage> {
           return AlertDialog(
             title: Text(
               'Hata',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             content: Text(
               'Lütfen tüm alanları doldurun.',
@@ -58,17 +48,13 @@ class _SignInPageState extends State<SignInPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  setState(() {
-                    isLoading = false;
-                  });
-
+                  Navigator.pop(context);
+                  // yukleniyordan cikis
                   Navigator.pop(context);
                 },
                 child: Text(
                   "Tamam",
                   style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.uc,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -80,51 +66,52 @@ class _SignInPageState extends State<SignInPage> {
       return;
     }
 
-    try {
-     // showLoadingDialog(context);
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      setState(() {
-        isLoading = false;
-      });
-      // Yükleme iletişim kutusunu kapat
-
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    )
+        .then((userCredential) {
+      // yukleniyordan cikis
+      Navigator.pop(context);
       // Oturum açma başarılı olduğunda yönlendirme işlemini gerçekleştir
-      context.go('/hesabim/signin');
-      emailController.clear();
-      passwordController.clear();
-    } on FirebaseAuthException catch (error) {
-      setState(() {
-        isLoading = false;
-      });
-    // Yükleme iletişim kutusunu kapat
+      //Navigator.push(
+      //  context,
+      //  MaterialPageRoute(builder: (context) => GirisPage())),
+     // );
+    }).catchError((error) {
+      // yukleniyordan cikis
+      Navigator.pop(context);
 
+      // Hata durumuna göre mesaj göster
       String errorMessage = 'Bir hata oluştu.';
 
-      switch (error.code) {
-        case 'wrong-password':
-          errorMessage = 'Yanlış şifre.';
-          break;
-        case 'user-not-found':
-          errorMessage = 'E-posta yanlış.';
-          break;
-        case 'invalid-email':
-          errorMessage = 'Geçersiz e-posta formatı.';
-          break;
-        case 'user-disabled':
-          errorMessage = 'Kullanıcı hesabı devre dışı bırakıldı.';
-          break;
-        case 'too-many-requests':
-          errorMessage =
-              'Çok fazla istek yapıldı. Lütfen daha sonra tekrar deneyin.';
-          break;
-        case 'operation-not-allowed':
-          errorMessage = 'Bu işlem izin verilmiyor.';
-          break;
-        // Diğer hata durumlarına göre gerekirse eklemeler yapabilirsiniz.
+      if (error is FirebaseAuthException) {
+        switch (error.code) {
+          case 'wrong-password':
+            errorMessage = 'Yanlış şifre.';
+            break;
+          case 'user-not-found':
+            errorMessage = 'E-posta yanlış.';
+            break;
+          case 'invalid-email':
+            errorMessage = 'Geçersiz e-posta formatı.';
+            break;
+          case 'user-not-found':
+            errorMessage = 'Kullanıcı bulunamadı.';
+            break;
+          case 'user-disabled':
+            errorMessage = 'Kullanıcı hesabı devre dışı bırakıldı.';
+            break;
+          case 'too-many-requests':
+            errorMessage =
+                'Çok fazla istek yapıldı. Lütfen daha sonra tekrar deneyin.';
+            break;
+          case 'operation-not-allowed':
+            errorMessage = 'Bu işlem izin verilmiyor.';
+            break;
+          // Diğer hata durumlarına göre gerekirse eklemeler yapabilirsiniz.
+        }
       }
 
       showDialog(
@@ -132,19 +119,20 @@ class _SignInPageState extends State<SignInPage> {
         builder: (context) => AlertDialog(
           title: Text(
             'Hata',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: Text(errorMessage),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                // İletişim kutusunu kapat
               },
               child: Text(
                 "Tamam",
                 style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.uc,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -152,7 +140,7 @@ class _SignInPageState extends State<SignInPage> {
           ],
         ),
       );
-    }
+    });
   }
 
   @override
@@ -161,23 +149,10 @@ class _SignInPageState extends State<SignInPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            SizedBox(
-              height: 10,
+            const SizedBox(
+              height: 88,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'lib/images/logo.gif',
-                  fit: BoxFit.cover,
-                  width: 150,
-                  height: 150,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: const [
@@ -187,7 +162,7 @@ class _SignInPageState extends State<SignInPage> {
                   child: Text(
                     'E-posta',
                     style: TextStyle(
-                      fontSize: 16, // Metin boyutunu 18 olarak ayarlar
+                      fontSize: 15, // Metin boyutunu 18 olarak ayarlar
                       fontWeight: FontWeight.normal, // Metni kalınlaştırır
                     ),
                   ),
@@ -219,7 +194,7 @@ class _SignInPageState extends State<SignInPage> {
                   child: Text(
                     'Şifre',
                     style: TextStyle(
-                      fontSize: 16, // Metin boyutunu 18 olarak ayarlar
+                      fontSize: 15, // Metin boyutunu 18 olarak ayarlar
                       fontWeight: FontWeight.normal, // Metni kalınlaştırır
                     ),
                   ),
@@ -248,17 +223,17 @@ class _SignInPageState extends State<SignInPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
-                    onTap: () => context.go('/hesabim/sifre'),
-                    /* Navigator.push(context, MaterialPageRoute(
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
                         builder: (context) {
                           return MyForgetPasswordPage();
                         },
-                      ));*/
-                    //??
+                      ));
+                    }, //??
                     child: const Text(
                       'Şifremi Unuttum',
                       style: TextStyle(
-                        color: AppColors.iki,
+                        color: Colors.blue,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -301,7 +276,7 @@ class _SignInPageState extends State<SignInPage> {
                   child: const Text(
                     'Üye ol',
                     style: TextStyle(
-                      color: AppColors.iki,
+                      color: Colors.blue,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

@@ -1,10 +1,11 @@
 import 'package:app_jam_ai/GirisOlaylari/tabs/textfield/testField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:line_icons/line_icon.dart';
 
-import '../../ColorAndType/color.dart';
+
+import '../girisPage.dart';
 import 'button/girisButton.dart';
 
 class MyForgetPasswordPage extends StatefulWidget {
@@ -32,7 +33,9 @@ class _MyForgetPasswordPageState extends State<MyForgetPasswordPage> {
           return AlertDialog(
             title: Text(
               'Hata',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             content: Text(
               'Lütfen tüm alanları doldurun.',
@@ -46,8 +49,6 @@ class _MyForgetPasswordPageState extends State<MyForgetPasswordPage> {
                 child: Text(
                   "Tamam",
                   style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.uc,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -72,7 +73,9 @@ class _MyForgetPasswordPageState extends State<MyForgetPasswordPage> {
             icon: LineIcon(Icons.email_rounded),
             title: Text(
               "Şifre Yenileme",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             content: Text(
                 " $email adresine şifre yenileme linkiniz gönderildi.",
@@ -80,13 +83,14 @@ class _MyForgetPasswordPageState extends State<MyForgetPasswordPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  context.go('/hesabim'); // İletişim kutusunu kapat
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GirisPage()),
+                  ); // İletişim kutusunu kapat
                 },
                 child: Text(
                   "Tamam",
                   style: TextStyle(
-                    fontSize: 16,
-                    color: AppColors.uc,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -116,7 +120,9 @@ class _MyForgetPasswordPageState extends State<MyForgetPasswordPage> {
         builder: (context) => AlertDialog(
           title: Text(
             'Hata',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: Text(errorMessage),
           actions: [
@@ -128,8 +134,6 @@ class _MyForgetPasswordPageState extends State<MyForgetPasswordPage> {
               child: Text(
                 "Tamam",
                 style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.uc,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -144,15 +148,12 @@ class _MyForgetPasswordPageState extends State<MyForgetPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Şifremi Unuttum",
-          style: TextStyle(
-            color: AppColors.bir,
-          ),
+        title: Text(
+          'Şifremi Unuttum',
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
-        backgroundColor: AppColors.uc,
+        backgroundColor: Colors.black12,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -170,7 +171,7 @@ class _MyForgetPasswordPageState extends State<MyForgetPasswordPage> {
                   child: Text(
                     'E-posta',
                     style: TextStyle(
-                      fontSize: 16, // Metin boyutunu 18 olarak ayarlar
+                      fontSize: 15, // Metin boyutunu 18 olarak ayarlar
                       fontWeight: FontWeight.normal, // Metni kalınlaştırır
                     ),
                   ),
