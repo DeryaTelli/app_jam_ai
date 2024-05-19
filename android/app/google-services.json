@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1065934052482",
+    "project_id": "appjamai-7ee78",
+    "storage_bucket": "appjamai-7ee78.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065934052482:android:6382d4c2a325746375689b",
+        "android_client_info": {
+          "package_name": "com.example.app_jam_ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2zzFGzQWl--p0rGGMR6kFu8zQ84Eaucs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

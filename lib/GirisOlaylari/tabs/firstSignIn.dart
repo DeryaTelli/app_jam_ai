@@ -1,5 +1,6 @@
 import 'package:app_jam_ai/GirisOlaylari/tabs/sifreUnuttumPage.dart';
 import 'package:app_jam_ai/GirisOlaylari/tabs/textfield/testField.dart';
+import 'package:app_jam_ai/degistirildi.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -66,8 +67,7 @@ class _SignInPageState extends State<SignInPage> {
       return;
     }
 
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: emailController.text,
       password: passwordController.text,
     )
@@ -75,10 +75,7 @@ class _SignInPageState extends State<SignInPage> {
       // yukleniyordan cikis
       Navigator.pop(context);
       // Oturum açma başarılı olduğunda yönlendirme işlemini gerçekleştir
-      //Navigator.push(
-      //  context,
-      //  MaterialPageRoute(builder: (context) => GirisPage())),
-     // );
+    Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
     }).catchError((error) {
       // yukleniyordan cikis
       Navigator.pop(context);
